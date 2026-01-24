@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Happy Birthday 🎉</title>
+
+<!-- Soft playful font -->
+<link href="https://fonts.googleapis.com/css2?family=Patrick+Hand&family=Quicksand:wght@400;600&display=swap" rel="stylesheet">
+
+<style>
+body {
+  margin: 0;
+  font-family: 'Quicksand', sans-serif;
+  background: linear-gradient(135deg, #ffd6e8, #d6f0ff);
+  text-align: center;
+  padding: 20px;
+}
+
+h1, h2 {
+  font-family: 'Patrick Hand', cursive;
+}
+
+.box {
+  background: white;
+  border-radius: 20px;
+  padding: 20px;
+  max-width: 500px;
+  margin: 20px auto;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+}
+
+input {
+  padding: 10px;
+  border-radius: 10px;
+  border: 1px solid #ccc;
+  width: 70%;
+  font-size: 16px;
+}
+
+button {
+  margin-top: 10px;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 20px;
+  background: #ff7eb3;
+  color: white;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+button:hover {
+  background: #ff4f91;
+}
+
+.hidden {
+  display: none;
+}
+
+#maze {
+  display: grid;
+  grid-template-columns: repeat(7, 40px);
+  grid-template-rows: repeat(7, 40px);
+  gap: 2px;
+  justify-content: center;
+  margin: 20px auto;
+}
+
+.cell {
+  width: 40px;
+  height: 40px;
+  background: #eee;
+  border-radius: 6px;
+}
+
+.wall { background: #444; }
+.goal { background: gold; }
+
+.player {
+  background-image: url("YOUR_IMAGE_URL_HERE");
+  background-size: cover;
+  border-radius: 50%;
+}
+
+.controls button {
+  margin: 5px;
+}
+</style>
+</head>
+
+<body>
+
+<div class="box">
+  <h1>⚠️ Heads up</h1>
+  <p>Please don’t be mad at me 🥺</p>
+  <button onclick="start()">Okay 😌</button>
+</div>
+
+<div id="quiz" class="box hidden">
+  <h2 id="question"></h2>
+  <input id="answer" placeholder="Your answer here 👀">
+  <br>
+  <button onclick="check()">Submit</button>
+  <p id="feedback"></p>
+</div>
+
+<div id="mazeBox" class="box hidden">
+  <h2>Final level 😈</h2>
+  <p>Reach the ⭐ to unlock your surprise</p>
+  <div id="maze"></div>
+
+  <div class="controls">
+    <button onclick="move('up')">⬆️</button><br>
+    <button onclick="move('left')">⬅️</button>
+    <button onclick="move('down')">⬇️</button>
+    <button onclick="move('right')">➡️</button>
+  </div>
+</div>
+
+<div id="final" class="box hidden">
+  <h1>🎉 Happy 18th 🎉</h1>
+  <p>
+    🎊Bazinga!! You cracked them all 😌!!<br><br>
+
+    Happiesttt birthday <b>Ashweeeeeen</b>!!!<br>
+    Always be your gorgeous self you are <br><br>
+
+    Happy Birthday to the only person who’s seen me at my worst and still chose to stay.<br>
+    Happy Birthday to my bestestestest friend !!!!!<br><br>
+
+    I honestly don’t know what I’d do without you.
+    Thank you for being my safe place, my biggest support, and my favourite human.
+    I hope this year gives you everything you wish for.
+    Love you always <i>(as a friend ofcc!!)</i> <br><br>
+
+    And I’m really really sorry for making you wait at the bus stop 🥺  
+    and sorry cuz you’re always stuck with such a boring person all the time  
+    and missing out all the fun…<br><br>
+
+    (Thank you for everything!!! and sorry because you have a dumb bestfriend...🥲👉👈)
+  </p>
+</div>
+
+<script>
+const riddles = [
+  {q:"What comes in a minute twice and in a moment once?", a:"m"},
+  {q:"What is the next number? 1,1,2,3,5,8, ?", a:"13", w:"Sheldon’s already judging you 👀"},
+  {q:"What is Sheldon’s favourite number?", a:"73"},
+  {q:"What is Penny’s last name in early seasons?", a:"teller", w:"The answer’s Teller 😌"},
+  {q:"What was the name of Ross and Monica’s 🐕?", a:"chi-chi🐶🐾"},
+  {q:"One affirmative trait of your best friend that you admire", a:"*"},
+  {q:"What colour did you and your best friend wear for farewell?", a:"teal"},
+  {q:"When is your best friend’s birthday?", a:"*"}
+];
+
+let i = 0;
+
+function start(){
+  document.querySelector('.box').classList.add('hidden');
+  document.getElementById('quiz').classList.remove('hidden');
+  load();
+}
+
+function load(){
+  document.getElementById('question').innerText = riddles[i].q;
+  document.getElementById('feedback').innerText = "";
+  document.getElementById('answer').value = "";
+}
+
+function check(){
+  let val = document.getElementById('answer').value.toLowerCase().trim();
+  let r = riddles[i];
+
+  if(r.a === "*" || val === r.a){
+    i++;
+    if(i < riddles.length) load();
+    else {
+      document.getElementById('quiz').classList.add('hidden');
+      document.getElementById('mazeBox').classList.remove('hidden');
+      buildMaze();
+    }
+  } else {
+    document.getElementById('feedback').innerText = r.w || "Nope 😏 try again";
+  }
+}
+
+// MAZE
+const mazeLayout = [
+  [1,1,1,1,1,1,1],
+  [1,0,0,0,1,0,1],
+  [1,0,1,0,1,0,1],
+  [1,0,1,0,0,0,1],
+  [1,0,1,1,1,0,1],
+  [1,0,0,0,0,0,1],
+  [1,1,1,1,1,1,1]
+];
+
+let px=1, py=1;
+
+function buildMaze(){
+  const maze = document.getElementById('maze');
+  maze.innerHTML="";
+  mazeLayout.forEach((row,y)=>{
+    row.forEach((cell,x)=>{
+      let d=document.createElement('div');
+      d.className="cell";
+      if(cell===1)d.classList.add("wall");
+      if(x===5 && y===5)d.classList.add("goal");
+      if(x===px && y===py)d.classList.add("player");
+      maze.appendChild(d);
+    });
+  });
+}
+
+function move(dir){
+  let nx=px, ny=py;
+  if(dir==="up")ny--;
+  if(dir==="down")ny++;
+  if(dir==="left")nx--;
+  if(dir==="right")nx++;
+
+  if(mazeLayout[ny][nx]===0){
+    px=nx; py=ny;
+    buildMaze();
+    if(px===5 && py===5){
+      document.getElementById('mazeBox').classList.add('hidden');
+      document.getElementById('final').classList.remove('hidden');
+    }
+  } else {
+    alert("Bazinga 😌 wrong turn");
+  }
+}
+
+document.addEventListener("keydown",e=>{
+  if(e.key.includes("Arrow")) move(e.key.replace("Arrow","").toLowerCase());
+});
+</script>
+
+</body>
+  </html>
