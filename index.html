@@ -1,238 +1,249 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <title>Happy Birthday 🎉</title>
 
-<!-- Soft playful font -->
-<link href="https://fonts.googleapis.com/css2?family=Patrick+Hand&family=Quicksand:wght@400;600&display=swap" rel="stylesheet">
+<!-- Fonts -->
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;700&display=swap" rel="stylesheet">
 
 <style>
+* { box-sizing: border-box; font-family: 'Poppins', sans-serif; }
 body {
   margin: 0;
-  font-family: 'Quicksand', sans-serif;
-  background: linear-gradient(135deg, #ffd6e8, #d6f0ff);
   text-align: center;
-  padding: 20px;
+  background: linear-gradient(135deg, #ff9a9e, #fad0c4, #a18cd1);
+  color: #222;
 }
 
-h1, h2 {
-  font-family: 'Patrick Hand', cursive;
+.page {
+  display: none;
+  min-height: 100vh;
+  padding: 40px 20px;
 }
 
-.box {
-  background: white;
-  border-radius: 20px;
-  padding: 20px;
-  max-width: 500px;
-  margin: 20px auto;
-  box-shadow: 0 10px 25px rgba(0,0,0,0.1);
-}
-
-input {
-  padding: 10px;
-  border-radius: 10px;
-  border: 1px solid #ccc;
-  width: 70%;
-  font-size: 16px;
-}
+.active { display: block; }
 
 button {
-  margin-top: 10px;
-  padding: 10px 20px;
+  padding: 12px 22px;
+  font-size: 1rem;
   border: none;
-  border-radius: 20px;
-  background: #ff7eb3;
+  border-radius: 25px;
+  background: #ff4d6d;
   color: white;
-  font-size: 16px;
   cursor: pointer;
+  margin-top: 25px;
 }
+button:hover { background: #ff1f4a; }
 
-button:hover {
-  background: #ff4f91;
-}
+h1 { color: #ff1f4a; }
+.small { opacity: 0.85; }
 
-.hidden {
-  display: none;
-}
-
+/* Maze */
 #maze {
   display: grid;
-  grid-template-columns: repeat(7, 40px);
-  grid-template-rows: repeat(7, 40px);
-  gap: 2px;
+  grid-template-columns: repeat(7, 45px);
+  gap: 5px;
   justify-content: center;
-  margin: 20px auto;
+  margin-top: 20px;
 }
-
 .cell {
-  width: 40px;
-  height: 40px;
-  background: #eee;
+  width: 45px;
+  height: 45px;
   border-radius: 6px;
 }
-
 .wall { background: #444; }
+.path { background: #ffecec; }
+.player { font-size: 26px; display: flex; align-items: center; justify-content: center; }
 .goal { background: gold; }
 
-.player {
-  background-image: url(https://raw.githubusercontent.com/manyatha757-svg/B-day-/main/share_1769268911848.png);
-  background-size: cover;
-  border-radius: 50%;
-}
-
-.controls button {
-  margin: 5px;
+.confetti {
+  position: fixed;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  pointer-events: none;
 }
 </style>
 </head>
 
 <body>
 
-<div class="box">
-  <h1>⚠️ Heads up</h1>
+<!-- PAGE 1 -->
+<div class="page active" id="p1">
+  <h1>Happy Birthday!!! 🎊🎉</h1>
   <p>Please don’t be mad at me 🥺</p>
-  <button onclick="start()">Okay 😌</button>
+  <p>This was made with love, chaos, and very little brain power.</p>
+  <p class="small">It’s not perfect, but it’s from me.</p>
+  <button onclick="go(2)">Ready?</button>
 </div>
 
-<div id="quiz" class="box hidden">
-  <h2 id="question"></h2>
-  <input id="answer" placeholder="Your answer here 👀">
-  <br>
+<!-- PAGE 2 -->
+<div class="page" id="p2">
+  <p>Okay listen 😏</p>
+  <p>You don’t get the wishes that easily.</p>
+  <p>Answer a few questions first —<br>some easy, some not so much.</p>
+  <p>No cheating 👀</p>
+  <button onclick="go(3)">Let’s go</button>
+</div>
+
+<!-- PAGE 3 – RIDDLES -->
+<div class="page" id="p3">
+  <h2 id="q"></h2>
+  <input id="a" placeholder="Your answer"/>
+  <p id="msg"></p>
   <button onclick="check()">Submit</button>
-  <p id="feedback"></p>
 </div>
 
-<div id="mazeBox" class="box hidden">
-  <h2>Final level 😈</h2>
-  <p>Reach the ⭐ to unlock your surprise</p>
+<!-- PAGE 4 – MAZE -->
+<div class="page" id="p4">
+  <h2>Solve this 😌</h2>
+  <p class="small">Arrow keys / tap buttons</p>
   <div id="maze"></div>
-
-  <div class="controls">
-    <button onclick="move('up')">⬆️</button><br>
-    <button onclick="move('left')">⬅️</button>
-    <button onclick="move('down')">⬇️</button>
-    <button onclick="move('right')">➡️</button>
-  </div>
+  <button onclick="move('up')">⬆️</button><br>
+  <button onclick="move('left')">⬅️</button>
+  <button onclick="move('right')">➡️</button><br>
+  <button onclick="move('down')">⬇️</button>
 </div>
 
-<div id="final" class="box hidden">
-  <h1>🎉 Happy 18th 🎉</h1>
+<!-- PAGE 5 – BIRTHDAY -->
+<div class="page" id="p5">
+  <h1>Bazinga!! 😌✨</h1>
+  <p>You cracked them all…</p>
+  <h2>Happyyy 18th!!! 🎉🎉🎉</h2>
+
+  <p>Happy Birthday to the only person<br>
+  who’s seen me at my worst<br>
+  and still chose to stay ❤️</p>
+
+  <p>Happiest birthday <b>Ashweeeeeen!!</b><br>
+  wishing you all the good luck and prosperity 🍀✨<br>
+  and better sense of humour 😭<br>
+  <small>(some people call your jokes lame… I never did 👀)</small></p>
+
+  <button onclick="go(6)">One last thing …</button>
+</div>
+
+<!-- PAGE 6 – LONG MESSAGE -->
+<div class="page" id="p6">
+  <h2>❤️</h2>
   <p>
-    🎊Bazinga!! You cracked them all 😌!!<br><br>
+You’re a gorgeous person !! Always be that guy who helps people selflessly ✨<br><br>
 
-    Happiesttt birthday <b>Ashweeeeeen</b>!!!<br>
-    Always be your gorgeous self you are <br><br>
+Happiest birthday to my favourite person, my best friend <b>Ashweeeeeen</b> 🎉❤️<br><br>
 
-    Happy Birthday to the only person who’s seen me at my worst and still chose to stay.<br>
-    Happy Birthday to my bestestestest friend !!!!!<br><br>
+You’re a really important person in my life 🫶  
+Idk what I’d have done without you  
+(probably would’ve been hit by a gaadi and been dead by now fs 😂💀).<br><br>
 
-    I honestly don’t know what I’d do without you.
-    Thank you for being my safe place, my biggest support, and my favourite human.
-    I hope this year gives you everything you wish for.
-    Love you always <i>(as a friend ofcc!!)</i> <br><br>
+Thank you for being my best friend — someone I can tell anything to,  
+someone who stayed, always ❤️<br><br>
 
-    And I’m really really sorry for making you wait at the bus stop 🥺  
-    and sorry cuz you’re always stuck with such a boring person all the time  
-    and missing out all the fun…<br><br>
+You’re the first real best friend I’ve ever had  
+and I think I got insanely lucky 🍀❤️<br><br>
+I’m sorry for making you wait at the bus stop   
+and for being boring and making you miss out on fun 😭  
+and for the times I wasn’t there <br><br>
 
-    (Thank you for everything!!! and sorry because you have a dumb bestfriend...🥲👉👈)
+You’re very important to me   
+Thank you for existing and being the best part of my life <br><br>
+I’ll always be there for you 
+I care a lot about you and love you lots 
+(of course, as a friend 😌)<br><br>
+
+Happy Birthday 🎂🎉🎉🎉<br>
+— <b>-Your bestfriend Manyatha</b> 💕
   </p>
 </div>
 
+<canvas class="confetti"></canvas>
+
 <script>
-const riddles = [
-  {q:"What comes in a minute twice and in a moment once?", a:"m"},
-  {q:"What is the next number? 1,1,2,3,5,8, ?", a:"13", w:"Sheldon’s already judging you 👀"},
-  {q:"What is Sheldon’s favourite number?", a:"73"},
-  {q:"What is Penny’s last name in early seasons?", a:"teller", w:"The answer’s Teller 😌"},
-  {q:"One affirmative trait of your best friend that you admire", a:"*"},
-  {q:"What colour did you and your best friend wear for farewell?", a:"teal"},
-  {q:"When is your best friend’s birthday?", a:"*"}
-];
-
-let i = 0;
-
-function start(){
-  document.querySelector('.box').classList.add('hidden');
-  document.getElementById('quiz').classList.remove('hidden');
-  load();
+/* PAGE NAV */
+function go(n){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.getElementById('p'+n).classList.add('active');
+  if(n>=5) confetti();
 }
+
+/* RIDDLES */
+let i=0;
+const qs=[
+["What is the next number? 1,1,2,3,5,8","13","Sheldon’s already judging you 😌"],
+["What is Sheldon’s favourite number?","73","Bazinga… try again"],
+["What was Ross & Monica’s dog called?","chi-chi","Wrong 😭"],
+["One good trait of your best friend?","any","Correct obviously 😌"],
+["Farewell outfit colour?","teal","Nope 👀"],
+["Best friend’s birthday?","any","You should know this 😭"]
+];
 
 function load(){
-  document.getElementById('question').innerText = riddles[i].q;
-  document.getElementById('feedback').innerText = "";
-  document.getElementById('answer').value = "";
+  q.innerText=qs[i][0];
+  a.value=""; msg.innerText="";
 }
+load();
 
 function check(){
-  let val = document.getElementById('answer').value.toLowerCase().trim();
-  let r = riddles[i];
-
-  if(r.a === "*" || val === r.a){
+  let ans=a.value.toLowerCase();
+  if(qs[i][1]=="any" || ans==qs[i][1]){
     i++;
-    if(i < riddles.length) load();
-    else {
-      document.getElementById('quiz').classList.add('hidden');
-      document.getElementById('mazeBox').classList.remove('hidden');
-      buildMaze();
-    }
-  } else {
-    document.getElementById('feedback').innerText = r.w || "Nope 😏 try again";
-  }
+    if(i==qs.length) go(4);
+    else load();
+  } else msg.innerText=qs[i][2];
 }
 
-// MAZE
-const mazeLayout = [
-  [1,1,1,1,1,1,1],
-  [1,0,0,0,1,0,1],
-  [1,0,1,0,1,0,1],
-  [1,0,1,0,0,0,1],
-  [1,0,1,1,1,0,1],
-  [1,0,0,0,0,0,1],
-  [1,1,1,1,1,1,1]
+/* MAZE */
+const mazeMap=[
+"#######",
+"#P #  #",
+"# ### #",
+"#   # #",
+"### # #",
+"#   #G#",
+"#######"
 ];
 
-let px=1, py=1;
-
-function buildMaze(){
-  const maze = document.getElementById('maze');
+let px=1,py=1;
+function draw(){
   maze.innerHTML="";
-  mazeLayout.forEach((row,y)=>{
-    row.forEach((cell,x)=>{
-      let d=document.createElement('div');
-      d.className="cell";
-      if(cell===1)d.classList.add("wall");
-      if(x===5 && y===5)d.classList.add("goal");
-      if(x===px && y===py)d.classList.add("player");
+  mazeMap.forEach((r,y)=>{
+    [...r].forEach((c,x)=>{
+      let d=document.createElement("div");
+      d.className="cell "+(c=="#"?"wall":"path");
+      if(x==px&&y==py){d.className+=" player";d.textContent="🧑"; }
+      if(c=="G") d.className+=" goal";
       maze.appendChild(d);
     });
   });
 }
+draw();
 
 function move(dir){
   let nx=px, ny=py;
-  if(dir==="up")ny--;
-  if(dir==="down")ny++;
-  if(dir==="left")nx--;
-  if(dir==="right")nx++;
-
-  if(mazeLayout[ny][nx]===0){
-    px=nx; py=ny;
-    buildMaze();
-    if(px===5 && py===5){
-      document.getElementById('mazeBox').classList.add('hidden');
-      document.getElementById('final').classList.remove('hidden');
-    }
-  } else {
-    alert("Bazinga 😌 wrong turn");
-  }
+  if(dir=="up")ny--;
+  if(dir=="down")ny++;
+  if(dir=="left")nx--;
+  if(dir=="right")nx++;
+  if(mazeMap[ny][nx]!="#"){px=nx;py=ny;draw();}
+  if(mazeMap[py][px]=="G") go(5);
 }
 
-document.addEventListener("keydown",e=>{
-  if(e.key.includes("Arrow")) move(e.key.replace("Arrow","").toLowerCase());
-});
+/* CONFETTI */
+function confetti(){
+  const c=document.querySelector(".confetti"),ctx=c.getContext("2d");
+  c.width=innerWidth;c.height=innerHeight;
+  let p=[...Array(120)].map(()=>({x:Math.random()*c.width,y:Math.random()*c.height,r:Math.random()*6}));
+  setInterval(()=>{
+    ctx.clearRect(0,0,c.width,c.height);
+    p.forEach(o=>{
+      ctx.fillStyle=`hsl(${Math.random()*360},100%,70%)`;
+      ctx.beginPath();
+      ctx.arc(o.x,o.y,o.r,0,Math.PI*2);
+      ctx.fill();
+      o.y+=2;if(o.y>c.height)o.y=0;
+    });
+  },30);
+}
 </script>
-
 </body>
-  </html>
+</html>
